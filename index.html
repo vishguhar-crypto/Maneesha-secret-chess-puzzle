@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maneesha's Secret Chess Quest ❤️️</title>
+  <title>Maneesha's Secret Chess Quest ❤</title>
   <style>
     body {
       background-color: #fff0f5;
@@ -61,10 +61,6 @@
       font-size: 1rem;
     }
 
-    input:focus {
-      border-color: #d81b60;
-    }
-
     button {
       background-color: #ff69b4;
       color: white;
@@ -74,21 +70,12 @@
       font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #d81b60;
     }
 
     #errorMsg {
       color: #e53935;
       font-size: 0.85rem;
       margin-top: 5px;
-      display: none;
-    }
-
-    #gameSection {
       display: none;
     }
 
@@ -102,7 +89,6 @@
       border: 3px solid #d81b60;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
 
     .square {
@@ -112,21 +98,11 @@
       font-size: 34px;
       user-select: none;
       cursor: pointer;
-      position: relative;
     }
 
-    .white-square {
-      background-color: #ffe6eb;
-    }
-
-    .black-square {
-      background-color: #ff99bb;
-    }
-
-    .square.selected {
-      background-color: #ff1493 !important;
-      color: white;
-    }
+    .white-square { background-color: #ffe6eb; }
+    .black-square { background-color: #ff99bb; }
+    .square.selected { background-color: #ff1493 !important; color: white; }
 
     .modal {
       display: none;
@@ -155,10 +131,10 @@
 </head>
 <body>
 
-  <!-- 1. PASSWORD SCREEN -->
+  <!-- PASSWORD SECTION -->
   <div id="passwordSection" class="card">
     <h1 id="passTitle">🔒 Top Secret Area!</h1>
-    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. Enter the secret passcode to enter!</p>
+    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>Enter the secret passcode to unlock!</p>
     
     <div class="hint-box" id="hintBox">
       <strong>Level 1 Hint:</strong> What feature of yours do I tease you with every day? 👃😜
@@ -170,15 +146,14 @@
     <div id="errorMsg">Wrong passcode! Read the hint carefully or ask me 😜</div>
   </div>
 
-  <!-- 2. GAME SECTION -->
-  <div id="gameSection" class="card">
-    <h2 id="levelTitle">Level 1: Back-Rank Mate ♟️️</h2>
+  <!-- GAME SECTION -->
+  <div id="gameSection" class="card" style="display:none;">
+    <h2 id="levelTitle">Level 1: Back-Rank Mate ♟</h2>
     <p id="levelInstruction">Find the winning move for White to deliver Checkmate!</p>
-    
     <div id="board"></div>
   </div>
 
-  <!-- 3. SUCCESS MODAL POPUP -->
+  <!-- MODAL POPUP -->
   <div id="overlay" class="overlay"></div>
   <div id="successModal" class="modal">
     <h3 id="modalHeader">Level Complete! 🎉</h3>
@@ -238,7 +213,7 @@
         title: "Level 5: Smothered Mate ♟️",
         password: "camel",
         hint: "Animal with a hump 🐪",
-        instruction: "Use your Knight to give a deadly double check!",
+        instruction: "Use your Knight to give a double check!",
         boardState: { 'a8': 'r', 'g8': 'k', 'f7': 'N', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'g1': 'K' },
         winningMove: { from: 'f7', to: 'h6' },
         message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
@@ -302,11 +277,7 @@
     function loadPasswordScreen() {
       const lvl = levels[currentLevelIndex];
       document.getElementById('passTitle').innerText = `🔒 Unlock Level ${lvl.level}`;
-      if (lvl.level > 1) {
-        document.getElementById('passDesc').innerText = `Enter the secret passcode to access Level ${lvl.level}!`;
-      } else {
-        document.getElementById('passDesc').innerText = `Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. Enter the secret passcode to enter!`;
-      }
+      document.getElementById('passDesc').innerText = lvl.level > 1 ? `Enter the secret passcode to access Level ${lvl.level}!` : `Welcome to your secret 10-level chess quest, Maneesha! ✨`;
       document.getElementById('hintBox').innerHTML = `<strong>Level ${lvl.level} Hint:</strong> ${lvl.hint}`;
       document.getElementById('passInput').value = '';
       document.getElementById('errorMsg').style.display = 'none';
@@ -317,7 +288,6 @@
     function checkPassword() {
       const input = document.getElementById('passInput').value.trim().toLowerCase();
       const currentLevel = levels[currentLevelIndex];
-
       if (input === currentLevel.password.toLowerCase()) {
         document.getElementById('passwordSection').style.display = 'none';
         document.getElementById('gameSection').style.display = 'block';
@@ -338,9 +308,9 @@
     function renderBoard() {
       const boardEl = document.getElementById('board');
       boardEl.innerHTML = '';
-
+      
       const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1']; // White at bottom, Black at top
 
       for (let r = 0; r < 8; r++) {
         for (let f = 0; f < 8; f++) {
@@ -349,15 +319,10 @@
 
           const squareEl = document.createElement('div');
           squareEl.className = `square ${isWhiteSquare ? 'white-square' : 'black-square'}`;
-          squareEl.dataset.square = squareId;
-
-          if (selectedSquare === squareId) {
-            squareEl.classList.add('selected');
-          }
+          if (selectedSquare === squareId) squareEl.classList.add('selected');
 
           if (currentBoardState[squareId]) {
-            const pieceCode = currentBoardState[squareId];
-            squareEl.innerText = PIECES[pieceCode];
+            squareEl.innerText = PIECES[currentBoardState[squareId]];
           }
 
           squareEl.addEventListener('click', () => handleSquareClick(squareId));
@@ -368,7 +333,6 @@
 
     function handleSquareClick(squareId) {
       const lvl = levels[currentLevelIndex];
-
       if (!selectedSquare) {
         if (currentBoardState[squareId] && currentBoardState[squareId] === currentBoardState[squareId].toUpperCase()) {
           selectedSquare = squareId;
@@ -383,13 +347,8 @@
 
           setTimeout(() => {
             document.getElementById('modalMsg').innerText = lvl.message;
-            if (lvl.level === 10) {
-              document.getElementById('modalHeader').innerText = "Game Completed! 💖";
-              document.getElementById('nextBtn').innerText = "Replay Game 🔄";
-            } else {
-              document.getElementById('modalHeader').innerText = "Level Complete! 🎉";
-              document.getElementById('nextBtn').innerText = "Proceed to Next Level ➔";
-            }
+            document.getElementById('modalHeader').innerText = lvl.level === 10 ? "Game Completed! 💖" : "Level Complete! 🎉";
+            document.getElementById('nextBtn').innerText = lvl.level === 10 ? "Replay Game 🔄" : "Proceed to Next Level ➔";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('successModal').style.display = 'block';
           }, 300);
@@ -403,14 +362,8 @@
     function nextLevel() {
       document.getElementById('overlay').style.display = 'none';
       document.getElementById('successModal').style.display = 'none';
-      
-      if (currentLevelIndex < levels.length - 1) {
-        currentLevelIndex++;
-        loadPasswordScreen();
-      } else {
-        currentLevelIndex = 0;
-        loadPasswordScreen();
-      }
+      currentLevelIndex = (currentLevelIndex < levels.length - 1) ? currentLevelIndex + 1 : 0;
+      loadPasswordScreen();
     }
 
     loadPasswordScreen();
