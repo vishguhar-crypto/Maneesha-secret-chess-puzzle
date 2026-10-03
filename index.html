@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maneesha's Secret Chess Quest - Level 1 ❤</title>
+  <title>Maneesha's Secret Chess Quest ❤</title>
   <style>
     body {
       background-color: #fff0f5;
@@ -70,7 +70,7 @@
       display: none;
     }
 
-    /* Fixed 8x8 Board & Equal Box Sizes */
+    /* Fixed Board Grid & Equal Box Sizes */
     #board {
       display: grid;
       grid-template-columns: repeat(8, 40px);
@@ -127,10 +127,10 @@
 </head>
 <body>
 
-  <!-- Password Screen -->
+  <!-- Password Section -->
   <div id="passwordSection" class="card">
-    <h1>🔒 Unlock Level 1</h1>
-    <p>Welcome to your secret chess quest, Maneesha! ✨<br>Enter the secret passcode to unlock!</p>
+    <h1 id="passTitle">🔒 Top Secret Area!</h1>
+    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>Enter the secret passcode to unlock!</p>
 
     <input type="password" id="passInput" placeholder="Enter Secret Passcode..." />
     <br>
@@ -138,18 +138,19 @@
     <div id="errorMsg">Wrong passcode! Try again 😜</div>
   </div>
 
-  <!-- Game Screen -->
+  <!-- Game Section -->
   <div id="gameSection" class="card" style="display:none;">
-    <h2>Level 1: Back-Rank Mate ♟️</h2>
-    <p>White to play: Find the checkmate move!</p>
+    <h2 id="levelTitle">Level 1</h2>
+    <p id="levelInstruction">White to play: Find the checkmate move!</p>
     <div id="board"></div>
   </div>
 
   <!-- Victory Overlay -->
   <div id="overlay" class="overlay"></div>
   <div id="successModal" class="modal">
-    <h3>Level Complete! 🎉</h3>
+    <h3 id="modalHeader">Level Complete! 🎉</h3>
     <p id="modalMsg" style="font-size: 1.05rem; color: #d81b60; font-weight: 500;"></p>
+    <button id="nextBtn" onclick="nextLevel()">Proceed to Next Level ➔</button>
   </div>
 
   <script>
@@ -158,34 +159,129 @@
       'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
     };
 
-    const level1Data = {
-      password: "bignose",
-      // White King on g1, Pawns on f2,g2,h2. Rook on e1.
-      // Black King on g8, Pawns on f7,g7,h7.
-      boardState: { 
-        'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 
-        'e1': 'R', 'g1': 'K', 'f2': 'P', 'g2': 'P', 'h2': 'P' 
+    const levels = [
+      {
+        level: 1,
+        title: "Level 1: Back-Rank Mate ♟️",
+        password: "bignose",
+        instruction: "White to play: Deliver checkmate in 1 move!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'e1': 'R', 'g1': 'K', 'f2': 'P', 'g2': 'P', 'h2': 'P' },
+        winningMove: { from: 'e1', to: 'e8' },
+        message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
       },
-      winningMove: { from: 'e1', to: 'e8' },
-      message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
-    };
+      {
+        level: 2,
+        title: "Level 2: Smothered Mate ♟️",
+        password: "pikachu",
+        instruction: "White to play: Smother Black's King!",
+        boardState: { 'h8': 'k', 'g8': 'r', 'g7': 'p', 'h7': 'p', 'f6': 'N', 'g1': 'K' },
+        winningMove: { from: 'f6', to: 'f7' },
+        message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
+      },
+      {
+        level: 3,
+        title: "Level 3: Boden's Mate ♟️",
+        password: "book",
+        instruction: "White to play: Checkmate using the Bishops!",
+        boardState: { 'c8': 'k', 'b8': 'r', 'b7': 'p', 'a7': 'p', 'f4': 'B', 'a6': 'B', 'g1': 'K' },
+        winningMove: { from: 'f4', to: 'c7' },
+        message: "Level 3 unlocked 🔓💖 You look super cute when you get mad at me."
+      },
+      {
+        level: 4,
+        title: "Level 4: Scholar's Attack ♟️",
+        password: "dentists are not doctors",
+        instruction: "White to play: Find the checkmate move!",
+        boardState: { 'e8': 'k', 'e5': 'p', 'f7': 'p', 'c4': 'B', 'h5': 'Q', 'g1': 'K' },
+        winningMove: { from: 'h5', to: 'f7' },
+        message: "Level 4 unlocked 🔓✨ I love the way you talk when you’re excited about something."
+      },
+      {
+        level: 5,
+        title: "Level 5: Anastasia's Mate ♟️",
+        password: "camel",
+        instruction: "White to play: Checkmate along the open file!",
+        boardState: { 'h8': 'k', 'g7': 'p', 'e7': 'N', 'a1': 'R', 'g1': 'K' },
+        winningMove: { from: 'a1', to: 'h1' },
+        message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
+      },
+      {
+        level: 6,
+        title: "Level 6: Arabian Mate ♟️",
+        password: "i love vishal",
+        instruction: "White to play: Coordinate Rook & Knight!",
+        boardState: { 'h8': 'k', 'f6': 'N', 'b7': 'R', 'g1': 'K' },
+        winningMove: { from: 'b7', to: 'h7' },
+        message: "Level 6 unlocked 🔓 hmmm... lagta h dimag toh h tum me."
+      },
+      {
+        level: 7,
+        title: "Level 7: Greco's Mate ♟️",
+        password: "kela",
+        instruction: "White to play: Deliver checkmate!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'd3': 'B', 'h4': 'Q', 'g1': 'K' },
+        winningMove: { from: 'h4', to: 'h7' },
+        message: "Level 7 unlocked 🔓 badhiya khel rhi ho, aese hi life me mere sath khelna h tumhe."
+      },
+      {
+        level: 8,
+        title: "Level 8: Dovetail Mate ♟️",
+        password: "mera hogya",
+        instruction: "White to play: Find the lethal Queen checkmate!",
+        boardState: { 'f7': 'k', 'e7': 'p', 'g7': 'p', 'd5': 'Q', 'g1': 'K' },
+        winningMove: { from: 'd5', to: 'e6' },
+        message: "Level 8 unlocked 🔓 tum soch rhi ho bas chess solve kr rhi ho, pr me toh roz tum par haar rha hu."
+      },
+      {
+        level: 9,
+        title: "Level 9: Opera Mate ♟️",
+        password: "hello again",
+        instruction: "White to play: Checkmate with the Rook!",
+        boardState: { 'd8': 'k', 'c7': 'p', 'b8': 'b', 'f3': 'B', 'd1': 'R', 'g1': 'K' },
+        winningMove: { from: 'd1', to: 'd8' },
+        message: "Level 9 unlocked 🔓 One last step... ready for the final answer?"
+      },
+      {
+        level: 10,
+        title: "Level 10: Romantic Checkmate ❤️",
+        password: "tum pyar ho mera",
+        instruction: "White to play: Deliver the final checkmate!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'g6': 'Q', 'f6': 'B', 'g1': 'K' },
+        winningMove: { from: 'g6', to: 'g7' },
+        message: "🎉 LEVEL 10 COMPLETE! ❤️\n\nNo more puzzles… I love you Maneesha. Forever and always."
+      }
+    ];
 
+    let currentLevelIndex = 0;
     let currentBoardState = {};
     let selectedSquare = null;
 
+    function loadPasswordScreen() {
+      const lvl = levels[currentLevelIndex];
+      document.getElementById('passTitle').innerText = `🔒 Unlock Level ${lvl.level}`;
+      document.getElementById('passDesc').innerText = lvl.level > 1 ? `Enter the secret passcode to access Level ${lvl.level}!` : `Welcome to your secret 10-level chess quest, Maneesha! ✨`;
+      document.getElementById('passInput').value = '';
+      document.getElementById('errorMsg').style.display = 'none';
+      document.getElementById('passwordSection').style.display = 'block';
+      document.getElementById('gameSection').style.display = 'none';
+    }
+
     function checkPassword() {
       const input = document.getElementById('passInput').value.trim().toLowerCase();
-      if (input === level1Data.password) {
+      const currentLevel = levels[currentLevelIndex];
+      if (input === currentLevel.password.toLowerCase()) {
         document.getElementById('passwordSection').style.display = 'none';
         document.getElementById('gameSection').style.display = 'block';
-        initBoard();
+        initLevel(currentLevel);
       } else {
         document.getElementById('errorMsg').style.display = 'block';
       }
     }
 
-    function initBoard() {
-      currentBoardState = JSON.parse(JSON.stringify(level1Data.boardState));
+    function initLevel(lvlData) {
+      document.getElementById('levelTitle').innerText = lvlData.title;
+      document.getElementById('levelInstruction').innerText = lvlData.instruction;
+      currentBoardState = JSON.parse(JSON.stringify(lvlData.boardState));
       selectedSquare = null;
       renderBoard();
     }
@@ -216,22 +312,23 @@
     }
 
     function handleSquareClick(squareId) {
+      const lvl = levels[currentLevelIndex];
       if (!selectedSquare) {
-        // Only allow selecting White pieces (Uppercase)
         if (currentBoardState[squareId] && currentBoardState[squareId] === currentBoardState[squareId].toUpperCase()) {
           selectedSquare = squareId;
           renderBoard();
         }
       } else {
-        // Check if move matches winning move
-        if (selectedSquare === level1Data.winningMove.from && squareId === level1Data.winningMove.to) {
+        if (selectedSquare === lvl.winningMove.from && squareId === lvl.winningMove.to) {
           currentBoardState[squareId] = currentBoardState[selectedSquare];
           delete currentBoardState[selectedSquare];
           selectedSquare = null;
           renderBoard();
 
           setTimeout(() => {
-            document.getElementById('modalMsg').innerText = level1Data.message;
+            document.getElementById('modalMsg').innerText = lvl.message;
+            document.getElementById('modalHeader').innerText = lvl.level === 10 ? "Game Completed! 💖" : "Level Complete! 🎉";
+            document.getElementById('nextBtn').innerText = lvl.level === 10 ? "Replay Game 🔄" : "Proceed to Next Level ➔";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('successModal').style.display = 'block';
           }, 300);
@@ -241,6 +338,15 @@
         }
       }
     }
+
+    function nextLevel() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('successModal').style.display = 'none';
+      currentLevelIndex = (currentLevelIndex < levels.length - 1) ? currentLevelIndex + 1 : 0;
+      loadPasswordScreen();
+    }
+
+    loadPasswordScreen();
   </script>
 </body>
 </html>
