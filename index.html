@@ -174,7 +174,6 @@
         title: "Level 2: Smothered Mate ♟️",
         password: "pikachu",
         instruction: "White to play: Smother Black's King!",
-        // FIX: Knight f6 square par hai jisse f7 move legal jump banegi
         boardState: { 'h8': 'k', 'g8': 'r', 'g7': 'p', 'h7': 'p', 'f6': 'N', 'g1': 'K' },
         winningMove: { from: 'f6', to: 'f7' },
         message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
@@ -226,7 +225,7 @@
       },
       {
         level: 8,
-        title: "Level 8: Dovetail Mate ♟️",
+        title: "Level 8: Dovetail Mate ♟️️",
         password: "mera hogya",
         instruction: "White to play: Find the lethal Queen checkmate!",
         boardState: { 'f7': 'k', 'e7': 'p', 'g7': 'p', 'd5': 'Q', 'g1': 'K' },
@@ -320,6 +319,7 @@
           renderBoard();
         }
       } else {
+        // Move match check
         if (selectedSquare === lvl.winningMove.from && squareId === lvl.winningMove.to) {
           currentBoardState[squareId] = currentBoardState[selectedSquare];
           delete currentBoardState[selectedSquare];
