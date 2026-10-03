@@ -164,54 +164,55 @@
       'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
     };
 
+    // Corrected & standard Chess Puzzle Setup
     const levels = [
       {
         level: 1,
         title: "Level 1: Back-Rank Mate ♟️",
         password: "bignose",
         hint: "What feature of yours do I tease you with every day? 👃😜",
-        instruction: "Find the winning move for White to deliver Checkmate!",
-        boardState: { 'a5': 'r', 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'f2': 'P', 'g2': 'P', 'h2': 'P', 'e2': 'Q', 'g1': 'K' },
-        winningMove: { from: 'e2', to: 'e8' },
+        instruction: "Move your Queen on e1 to e8 for Checkmate!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'e1': 'Q', 'g1': 'K', 'f2': 'P', 'g2': 'P', 'h2': 'P' },
+        winningMove: { from: 'e1', to: 'e8' },
         message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
       },
       {
         level: 2,
-        title: "Level 2: Tactical Knight Attack ♟️",
+        title: "Level 2: Scholar's Mate Attack ♟️",
         password: "pikachu",
         hint: "Your favorite yellow cute character ⚡",
-        instruction: "Attack the weak f7 pawn with your Knight!",
-        boardState: { 'e8': 'k', 'c6': 'n', 'f6': 'n', 'e5': 'p', 'f7': 'p', 'c4': 'B', 'e4': 'P', 'f3': 'N', 'g1': 'K' },
-        winningMove: { from: 'f3', to: 'g5' },
+        instruction: "Move Queen from h5 to f7 to deliver Checkmate!",
+        boardState: { 'e8': 'k', 'e5': 'p', 'c5': 'b', 'b8': 'n', 'c6': 'p', 'f7': 'p', 'c4': 'B', 'h5': 'Q', 'e1': 'K' },
+        winningMove: { from: 'h5', to: 'f7' },
         message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
       },
       {
         level: 3,
-        title: "Level 3: Knight Fork ♟️",
+        title: "Level 3: Royal Knight Fork ♟️",
         password: "book",
         hint: "Something you read or carry in your bag 📖",
-        instruction: "Fork Black's King and Queen!",
-        boardState: { 'e8': 'k', 'd8': 'q', 'c6': 'n', 'e5': 'p', 'c3': 'N', 'e4': 'P', 'g1': 'K' },
-        winningMove: { from: 'c3', to: 'd5' },
+        instruction: "Move Knight to c7 to fork King and Rook!",
+        boardState: { 'e8': 'k', 'a8': 'r', 'c6': 'p', 'd5': 'N', 'e1': 'K' },
+        winningMove: { from: 'd5', to: 'c7' },
         message: "Level 3 unlocked 🔓💖 You look super cute when you get mad at me."
       },
       {
         level: 4,
-        title: "Level 4: Queen Sacrifice Mate ♟️",
+        title: "Level 4: Queen Sacrifice ♟️",
         password: "dentists are not doctors",
         hint: "That funny truth about dental studies you always argue about 🦷😜",
-        instruction: "Deliver a devastating Checkmate!",
+        instruction: "Capture the h7 pawn with your Queen on h5!",
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'h5': 'Q', 'c4': 'B', 'g1': 'K' },
         winningMove: { from: 'h5', to: 'h7' },
         message: "Level 4 unlocked 🔓✨ I love the way you talk when you’re excited about something."
       },
       {
         level: 5,
-        title: "Level 5: Smothered Mate ♟️️",
+        title: "Level 5: Smothered Mate ♟️",
         password: "camel",
         hint: "Animal with a hump 🐪",
-        instruction: "Use your Knight to give a double check!",
-        boardState: { 'a8': 'r', 'g8': 'k', 'f7': 'N', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'g1': 'K' },
+        instruction: "Move Knight from f7 to h6 for double check!",
+        boardState: { 'g8': 'k', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'f7': 'N', 'g1': 'K' },
         winningMove: { from: 'f7', to: 'h6' },
         message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
       },
@@ -220,47 +221,47 @@
         title: "Level 6: Rook Skewer ♟️",
         password: "i love vishal",
         hint: "3 magic words about us ❤️",
-        instruction: "Skewer the King and win the Queen!",
+        instruction: "Move Rook from a1 to a8 to skewer King & Queen!",
         boardState: { 'a8': 'k', 'h8': 'q', 'a1': 'R', 'g1': 'K' },
         winningMove: { from: 'a1', to: 'a8' },
         message: "Level 6 unlocked 🔓 hmmm... lagta h dimag toh h tum me."
       },
       {
         level: 7,
-        title: "Level 7: Discovered Attack ♟️",
+        title: "Level 7: Discovered Check ♟️",
         password: "kela",
         hint: "Yellow fruit 🍌",
-        instruction: "Unleash a discovered attack with White!",
-        boardState: { 'g8': 'k', 'd8': 'q', 'e3': 'B', 'd4': 'R', 'g1': 'K' },
+        instruction: "Move Bishop to h6 to unleash Rook check!",
+        boardState: { 'g8': 'k', 'd8': 'q', 'e3': 'B', 'd1': 'R', 'g1': 'K' },
         winningMove: { from: 'e3', to: 'h6' },
         message: "Level 7 unlocked 🔓 badhiya khel rhi ho, aese hi life me mere sath khelna h tumhe."
       },
       {
         level: 8,
-        title: "Level 8: Pin & Win ♟️",
+        title: "Level 8: Pin & Capture ♟️",
         password: "mera hogya",
         hint: "What you say when you're done or tired 😴",
-        instruction: "Exploit the pinned piece!",
+        instruction: "Capture the pinned Queen on e7 with Rook!",
         boardState: { 'e8': 'k', 'e7': 'q', 'e1': 'R', 'g1': 'K' },
-        winningMove: { from: 'e1', to: 'e8' },
+        winningMove: { from: 'e1', to: 'e7' },
         message: "Level 8 unlocked 🔓 tum soch rhi ho bas chess solve kr rhi ho, pr me toh roz tum par haar rha hu."
       },
       {
         level: 9,
-        title: "Level 9: Endgame Breakthrough ♟️",
+        title: "Level 9: Pawn Breakthrough ♟️",
         password: "hello again",
         hint: "Greeting when meeting someone once more 👋",
-        instruction: "Push your Pawn for promotion!",
+        instruction: "Push your b6 Pawn to b7!",
         boardState: { 'a8': 'k', 'b6': 'P', 'a7': 'p', 'g1': 'K' },
         winningMove: { from: 'b6', to: 'b7' },
         message: "Level 9 unlocked 🔓 One last step... ready for the final answer?"
       },
       {
         level: 10,
-        title: "Level 10: Final Checkmate ❤️",
+        title: "Level 10: Romantic Checkmate ❤️",
         password: "tum pyar ho mera",
         hint: "The sweetest feeling of my life 💖",
-        instruction: "Deliver the final romantic Checkmate!",
+        instruction: "Move Queen to g7 for the final checkmate!",
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'g6': 'Q', 'f6': 'B', 'g1': 'K' },
         winningMove: { from: 'g6', to: 'g7' },
         message: "🎉 LEVEL 10 COMPLETE! ❤️\n\nNo more puzzles… I love you Maneesha. Forever and always."
