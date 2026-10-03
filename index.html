@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maneesha's Secret Chess Quest ❤️</title>
+  <title>Maneesha's Secret Chess Quest ❤️️</title>
   <style>
     body {
       background-color: #fff0f5;
@@ -92,7 +92,6 @@
       display: none;
     }
 
-    /* Chessboard CSS Grid */
     #board {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
@@ -159,7 +158,7 @@
   <!-- 1. PASSWORD SCREEN -->
   <div id="passwordSection" class="card">
     <h1 id="passTitle">🔒 Top Secret Area!</h1>
-    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. But wait... to move forward, you'll need a secret passcode! I will give you a daily hint before each puzzle. Let’s see how fast you can crack them all! 😉♟️️</p>
+    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. Enter the secret passcode to enter!</p>
     
     <div class="hint-box" id="hintBox">
       <strong>Level 1 Hint:</strong> What feature of yours do I tease you with every day? 👃😜
@@ -173,8 +172,8 @@
 
   <!-- 2. GAME SECTION -->
   <div id="gameSection" class="card">
-    <h2 id="levelTitle">Level 1: Back-Rank Mate ♟️</h2>
-    <p id="levelInstruction">Tap your piece, then tap the target square to move!</p>
+    <h2 id="levelTitle">Level 1: Back-Rank Mate ♟️️</h2>
+    <p id="levelInstruction">Find the winning move for White to deliver Checkmate!</p>
     
     <div id="board"></div>
   </div>
@@ -188,22 +187,20 @@
   </div>
 
   <script>
-    // Unicode Chess Symbols (Mobile Friendly)
     const PIECES = {
       'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
       'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
     };
 
-    // 10 Levels Data Array
     const levels = [
       {
         level: 1,
         title: "Level 1: Back-Rank Mate ♟️",
         password: "bignose",
         hint: "What feature of yours do I tease you with every day? 👃😜",
-        instruction: "Tap White Queen (e2), then tap e8 for Checkmate!",
-        boardState: { 'a8': 'r', 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'f2': 'P', 'g2': 'P', 'h2': 'P', 'e2': 'Q', 'g1': 'K' },
-        winningMove: { from: 'e2', to: 'e8', promo: 'Q' },
+        instruction: "Find the winning move for White to deliver Checkmate!",
+        boardState: { 'a5': 'r', 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'f2': 'P', 'g2': 'P', 'h2': 'P', 'e2': 'Q', 'g1': 'K' },
+        winningMove: { from: 'e2', to: 'e8' },
         message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
       },
       {
@@ -211,7 +208,7 @@
         title: "Level 2: Tactical Attack ♟️",
         password: "pikachu",
         hint: "Your favorite yellow cute character ⚡",
-        instruction: "Tap White Bishop (c4), then tap f7 to attack!",
+        instruction: "Find the best attacking move for White!",
         boardState: { 'e8': 'k', 'c6': 'n', 'f6': 'n', 'e5': 'p', 'c4': 'B', 'e4': 'P', 'f3': 'N', 'g1': 'K' },
         winningMove: { from: 'c4', to: 'f7' },
         message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
@@ -221,7 +218,7 @@
         title: "Level 3: Knight Fork ♟️",
         password: "book",
         hint: "Something you read or carry in your bag 📖",
-        instruction: "Tap White Knight (c3), then tap d5 to fork!",
+        instruction: "Fork Black's King and Queen!",
         boardState: { 'e8': 'k', 'd8': 'q', 'c6': 'n', 'e5': 'p', 'c3': 'N', 'e4': 'P', 'g1': 'K' },
         winningMove: { from: 'c3', to: 'd5' },
         message: "Level 3 unlocked 🔓💖 You look super cute when you get mad at me."
@@ -231,7 +228,7 @@
         title: "Level 4: Queen Sacrifice Mate ♟️",
         password: "dentists are not doctors",
         hint: "That funny truth about dental studies you always argue about 🦷😜",
-        instruction: "Tap White Queen (h5), then tap h7 for Mate!",
+        instruction: "Deliver a devastating Checkmate!",
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'h5': 'Q', 'c4': 'B', 'g1': 'K' },
         winningMove: { from: 'h5', to: 'h7' },
         message: "Level 4 unlocked 🔓✨ I love the way you talk when you’re excited about something."
@@ -241,8 +238,8 @@
         title: "Level 5: Smothered Mate ♟️",
         password: "camel",
         hint: "Animal with a hump 🐪",
-        instruction: "Tap White Knight (f7), then tap h6 for check!",
-        boardState: { '8': 'r', 'g8': 'k', 'f7': 'N', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'g1': 'K' },
+        instruction: "Use your Knight to give a deadly double check!",
+        boardState: { 'a8': 'r', 'g8': 'k', 'f7': 'N', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'g1': 'K' },
         winningMove: { from: 'f7', to: 'h6' },
         message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
       },
@@ -251,7 +248,7 @@
         title: "Level 6: Rook Skewer ♟️",
         password: "i love vishal",
         hint: "3 magic words about us ❤️",
-        instruction: "Tap White Rook (a1), then tap a8 for Skewer!",
+        instruction: "Skewer the King and win the Queen!",
         boardState: { 'a8': 'k', 'h8': 'q', 'a1': 'R', 'g1': 'K' },
         winningMove: { from: 'a1', to: 'a8' },
         message: "Level 6 unlocked 🔓 hmmm... lagta h dimag toh h tum me."
@@ -261,7 +258,7 @@
         title: "Level 7: Discovered Attack ♟️",
         password: "kela",
         hint: "Yellow fruit 🍌",
-        instruction: "Tap White Bishop (e3), then tap h6!",
+        instruction: "Unleash a discovered attack with White!",
         boardState: { 'g8': 'k', 'd8': 'q', 'e3': 'B', 'd4': 'R', 'g1': 'K' },
         winningMove: { from: 'e3', to: 'h6' },
         message: "Level 7 unlocked 🔓 badhiya khel rhi ho, aese hi life me mere sath khelna h tumhe."
@@ -271,7 +268,7 @@
         title: "Level 8: Pin & Win ♟️",
         password: "mera hogya",
         hint: "What you say when you're done or tired 😴",
-        instruction: "Tap White Pinning Rook (e1), then tap e8!",
+        instruction: "Exploit the pinned piece!",
         boardState: { 'e8': 'k', 'e7': 'q', 'e1': 'R', 'g1': 'K' },
         winningMove: { from: 'e1', to: 'e8' },
         message: "Level 8 unlocked 🔓 tum soch rhi ho bas chess solve kr rhi ho, pr me toh roz tum par haar rha hu."
@@ -281,7 +278,7 @@
         title: "Level 9: Endgame Breakthrough ♟️",
         password: "hello again",
         hint: "Greeting when meeting someone once more 👋",
-        instruction: "Tap White Pawn (b6), then tap b7 to promote!",
+        instruction: "Push your Pawn for promotion!",
         boardState: { 'a8': 'k', 'b6': 'P', 'a7': 'p', 'g1': 'K' },
         winningMove: { from: 'b6', to: 'b7' },
         message: "Level 9 unlocked 🔓 One last step... ready for the final answer?"
@@ -291,7 +288,7 @@
         title: "Level 10: Final Checkmate ❤️",
         password: "tum pyar ho mera",
         hint: "The sweetest feeling of my life 💖",
-        instruction: "Tap White Queen (g6), then tap g7 for Final Mate!",
+        instruction: "Deliver the final romantic Checkmate!",
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'g6': 'Q', 'f6': 'B', 'g1': 'K' },
         winningMove: { from: 'g6', to: 'g7' },
         message: "🎉 LEVEL 10 COMPLETE! ❤️\n\nNo more puzzles… I love you Maneesha. Forever and always."
@@ -307,6 +304,8 @@
       document.getElementById('passTitle').innerText = `🔒 Unlock Level ${lvl.level}`;
       if (lvl.level > 1) {
         document.getElementById('passDesc').innerText = `Enter the secret passcode to access Level ${lvl.level}!`;
+      } else {
+        document.getElementById('passDesc').innerText = `Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. Enter the secret passcode to enter!`;
       }
       document.getElementById('hintBox').innerHTML = `<strong>Level ${lvl.level} Hint:</strong> ${lvl.hint}`;
       document.getElementById('passInput').value = '';
@@ -377,8 +376,7 @@
         }
       } else {
         if (selectedSquare === lvl.winningMove.from && squareId === lvl.winningMove.to) {
-          // Correct Winning Move Executed
-          currentBoardState[squareId] = lvl.winningMove.promo ? lvl.winningMove.promo : currentBoardState[selectedSquare];
+          currentBoardState[squareId] = currentBoardState[selectedSquare];
           delete currentBoardState[selectedSquare];
           selectedSquare = null;
           renderBoard();
@@ -415,7 +413,6 @@
       }
     }
 
-    // Start with Level 1 Password Screen
     loadPasswordScreen();
   </script>
 </body>
