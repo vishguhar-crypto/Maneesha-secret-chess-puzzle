@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maneesha's Secret Chess Quest - Level 1 ❤️</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <style>
+    body {
+      background-color: #fff0f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+      border: 2px solid #ffb6c1;
+      text-align: center;
+      max-width: 450px;
+      width: 90%;
+    }
+
+    h1, h2 {
+      color: #d81b60;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .hint-box {
+      background-color: #fff5f8;
+      border: 1px dashed #ff69b4;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 15px 0;
+      font-size: 0.9rem;
+      color: #c2185b;
+    }
+
+    input[type="password"] {
+      width: 80%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ffb6c1;
+      border-radius: 25px;
+      outline: none;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      border-color: #d81b60;
+    }
+
+    button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #d81b60;
+    }
+
+    #errorMsg {
+      color: #e53935;
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    #gameSection {
+      display: none;
+    }
+
+    #board {
+      width: 350px;
+      margin: 20px auto;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      border: 3px solid #ff69b4;
+      z-index: 100;
+      width: 80%;
+      max-width: 350px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. PASSWORD SCREEN -->
+  <div id="passwordSection" class="card">
+    <h1>🔒 Top Secret Area!</h1>
+    <p>Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. But wait... to move forward, you'll need a secret passcode! I will give you a daily hint before each puzzle. Let’s see how fast you can crack them all! 😉♟️</p>
+    
+    <div class="hint-box">
+      <strong>Level 1 Hint:</strong> What feature of yours do I tease you with every day? 👃😜
+    </div>
+
+    <input type="password" id="passInput" placeholder="Enter Secret Passcode..." />
+    <br>
+    <button onclick="checkPassword()">Unlock Level 1 🔓</button>
+    <div id="errorMsg">Wrong passcode! Read the hint carefully or ask me 😜</div>
+  </div>
+
+  <!-- 2. GAME SECTION (LEVEL 1) -->
+  <div id="gameSection" class="card">
+    <h2>Level 1: Back-Rank Mate ♟️</h2>
+    <p>Find the winning move for White!</p>
+    
+    <div id="board"></div>
+  </div>
+
+  <!-- 3. SUCCESS MODAL POPUP -->
+  <div id="overlay" class="overlay"></div>
+  <div id="successModal" class="modal">
+    <h3>Level Complete! 🎉</h3>
+    <p id="modalMsg" style="font-size: 1.1rem; color: #d81b60; font-weight: 500;"></p>
+    <button onclick="alert('Level 1 complete! Ab Level 2 code karenge!')">Awesome! ➔</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+
+  <script>
+    // Level 1 Password set to bignose
+    const LEVEL_1_PASSWORD = "bignose"; 
+
+    const level1Data = {
+      fen: '6k1/5ppp/8/8/8/8/4QPPP/6K1 w - - 0 1',
+      winningMove: { from: 'e2', to: 'e8' },
+      message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
+    };
+
+    let game, board;
+
+    function checkPassword() {
+      const input = document.getElementById('passInput').value.trim().toLowerCase();
+      if (input === LEVEL_1_PASSWORD) {
+        document.getElementById('passwordSection').style.display = 'none';
+        document.getElementById('gameSection').style.display = 'block';
+        initLevel1();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+
+    function initLevel1() {
+      game = new Chess(level1Data.fen);
+
+      function onDrop(source, target) {
+        if (source === level1Data.winningMove.from && target === level1Data.winningMove.to) {
+          game.move({ from: source, to: target, promotion: 'q' });
+          board.position(game.fen());
+          
+          setTimeout(() => {
+            document.getElementById('modalMsg').innerText = level1Data.message;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('successModal').style.display = 'block';
+          }, 300);
+        } else {
+          return 'snapback';
+        }
+      }
+
+      board = Chessboard('board', {
+        draggable: true,
+        position: game.fen(),
+        onDrop: onDrop
+      });
+    }
+  </script>
+</body>
+</html>
