@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maneesha's Secret Chess Quest ❤</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       background-color: #fff0f5;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,42 +17,43 @@
       justify-content: center;
       min-height: 100vh;
       margin: 0;
+      padding: 10px;
       color: #333;
     }
 
     .card {
       background: #ffffff;
-      padding: 25px;
+      padding: 20px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
       border: 2px solid #ffb6c1;
       text-align: center;
       max-width: 400px;
-      width: 90%;
+      width: 100%;
     }
 
     h1, h2 {
       color: #d81b60;
       margin-bottom: 10px;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
 
     p {
       color: #555;
-      font-size: 0.95rem;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-top: 5px;
     }
 
     input[type="password"] {
-      width: 80%;
+      width: 85%;
       padding: 12px;
-      margin: 20px 0 10px 0;
+      margin: 15px 0 10px 0;
       border: 2px solid #ffb6c1;
       border-radius: 25px;
       outline: none;
       text-align: center;
-      font-size: 1rem;
-      box-sizing: border-box;
+      font-size: 0.95rem;
     }
 
     button {
@@ -58,9 +62,14 @@
       border: none;
       padding: 12px 25px;
       border-radius: 25px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: bold;
       cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    button:active {
+      transform: scale(0.96);
     }
 
     #errorMsg {
@@ -70,27 +79,26 @@
       display: none;
     }
 
-    /* Fixed Board Grid & Equal Box Sizes */
+    /* Fixed Board Grid System */
     #board {
       display: grid;
-      grid-template-columns: repeat(8, 40px);
-      grid-template-rows: repeat(8, 40px);
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
       width: 320px;
       height: 320px;
-      margin: 20px auto;
+      margin: 15px auto;
       border: 3px solid #d81b60;
       border-radius: 8px;
       overflow: hidden;
     }
 
     .square {
-      width: 40px;
-      height: 40px;
-      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 26px;
       line-height: 1;
       user-select: none;
       cursor: pointer;
@@ -112,7 +120,7 @@
       text-align: center;
       border: 3px solid #ff69b4;
       z-index: 100;
-      width: 80%;
+      width: 85%;
       max-width: 350px;
     }
 
@@ -149,7 +157,7 @@
   <div id="overlay" class="overlay"></div>
   <div id="successModal" class="modal">
     <h3 id="modalHeader">Level Complete! 🎉</h3>
-    <p id="modalMsg" style="font-size: 1.05rem; color: #d81b60; font-weight: 500;"></p>
+    <p id="modalMsg" style="font-size: 1rem; color: #d81b60; font-weight: 500; white-space: pre-line;"></p>
     <button id="nextBtn" onclick="nextLevel()">Proceed to Next Level ➔</button>
   </div>
 
@@ -174,6 +182,7 @@
         title: "Level 2: Smothered Mate ♟️",
         password: "pikachu",
         instruction: "White to play: Smother Black's King!",
+        // FIX: Knight ko f6 par rakkha hai taaki f7 (L-shape) legal move ho
         boardState: { 'h8': 'k', 'g8': 'r', 'g7': 'p', 'h7': 'p', 'f6': 'N', 'g1': 'K' },
         winningMove: { from: 'f6', to: 'f7' },
         message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
@@ -225,7 +234,7 @@
       },
       {
         level: 8,
-        title: "Level 8: Dovetail Mate ♟️️",
+        title: "Level 8: Dovetail Mate ♟️",
         password: "mera hogya",
         instruction: "White to play: Find the lethal Queen checkmate!",
         boardState: { 'f7': 'k', 'e7': 'p', 'g7': 'p', 'd5': 'Q', 'g1': 'K' },
@@ -314,12 +323,13 @@
     function handleSquareClick(squareId) {
       const lvl = levels[currentLevelIndex];
       if (!selectedSquare) {
+        // Sirf White piece select hone dega (Capital letters = White)
         if (currentBoardState[squareId] && currentBoardState[squareId] === currentBoardState[squareId].toUpperCase()) {
           selectedSquare = squareId;
           renderBoard();
         }
       } else {
-        // Move match check
+        // Move execution & winning check
         if (selectedSquare === lvl.winningMove.from && squareId === lvl.winningMove.to) {
           currentBoardState[squareId] = currentBoardState[selectedSquare];
           delete currentBoardState[selectedSquare];
@@ -334,6 +344,7 @@
             document.getElementById('successModal').style.display = 'block';
           }, 300);
         } else {
+          // Galat square target karne par selection reset ho jayega
           selectedSquare = null;
           renderBoard();
         }
@@ -346,6 +357,13 @@
       currentLevelIndex = (currentLevelIndex < levels.length - 1) ? currentLevelIndex + 1 : 0;
       loadPasswordScreen();
     }
+
+    // Enter key support for passcode input
+    document.getElementById("passInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        checkPassword();
+      }
+    });
 
     loadPasswordScreen();
   </script>
