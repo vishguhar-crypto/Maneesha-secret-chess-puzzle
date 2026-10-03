@@ -131,7 +131,6 @@
 </head>
 <body>
 
-  <!-- PASSWORD SECTION -->
   <div id="passwordSection" class="card">
     <h1 id="passTitle">🔒 Top Secret Area!</h1>
     <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>Enter the secret passcode to unlock!</p>
@@ -146,14 +145,12 @@
     <div id="errorMsg">Wrong passcode! Read the hint carefully or ask me 😜</div>
   </div>
 
-  <!-- GAME SECTION -->
   <div id="gameSection" class="card" style="display:none;">
     <h2 id="levelTitle">Level 1: Back-Rank Mate ♟</h2>
     <p id="levelInstruction">Find the winning move for White to deliver Checkmate!</p>
     <div id="board"></div>
   </div>
 
-  <!-- MODAL POPUP -->
   <div id="overlay" class="overlay"></div>
   <div id="successModal" class="modal">
     <h3 id="modalHeader">Level Complete! 🎉</h3>
@@ -308,9 +305,8 @@
     function renderBoard() {
       const boardEl = document.getElementById('board');
       boardEl.innerHTML = '';
-      
       const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1']; // White at bottom, Black at top
+      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
 
       for (let r = 0; r < 8; r++) {
         for (let f = 0; f < 8; f++) {
