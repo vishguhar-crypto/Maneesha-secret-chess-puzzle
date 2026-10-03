@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maneesha's Secret Chess Quest - Level 1 ❤️</title>
-  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <title>Maneesha's Secret Chess Quest ❤️</title>
   <style>
     body {
       background-color: #fff0f5;
@@ -20,18 +19,19 @@
 
     .card {
       background: #ffffff;
-      padding: 30px;
+      padding: 25px;
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
       border: 2px solid #ffb6c1;
       text-align: center;
-      max-width: 450px;
+      max-width: 400px;
       width: 90%;
     }
 
     h1, h2 {
       color: #d81b60;
       margin-bottom: 10px;
+      font-size: 1.4rem;
     }
 
     p {
@@ -92,9 +92,41 @@
       display: none;
     }
 
+    /* Chessboard CSS Grid */
     #board {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
       width: 320px;
+      height: 320px;
       margin: 20px auto;
+      border: 3px solid #d81b60;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      user-select: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .white-square {
+      background-color: #ffe6eb;
+    }
+
+    .black-square {
+      background-color: #ff99bb;
+    }
+
+    .square.selected {
+      background-color: #ff1493 !important;
+      color: white;
     }
 
     .modal {
@@ -126,23 +158,23 @@
 
   <!-- 1. PASSWORD SCREEN -->
   <div id="passwordSection" class="card">
-    <h1>🔒 Top Secret Area!</h1>
-    <p>Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. But wait... to move forward, you'll need a secret passcode! I will give you a daily hint before each puzzle. Let’s see how fast you can crack them all! 😉♟️</p>
+    <h1 id="passTitle">🔒 Top Secret Area!</h1>
+    <p id="passDesc">Welcome to your secret 10-level chess quest, Maneesha! ✨<br>A special surprise is waiting for you at every level. But wait... to move forward, you'll need a secret passcode! I will give you a daily hint before each puzzle. Let’s see how fast you can crack them all! 😉♟️️</p>
     
-    <div class="hint-box">
+    <div class="hint-box" id="hintBox">
       <strong>Level 1 Hint:</strong> What feature of yours do I tease you with every day? 👃😜
     </div>
 
     <input type="password" id="passInput" placeholder="Enter Secret Passcode..." />
     <br>
-    <button onclick="checkPassword()">Unlock Level 1 🔓</button>
+    <button onclick="checkPassword()">Unlock Puzzle 🔓</button>
     <div id="errorMsg">Wrong passcode! Read the hint carefully or ask me 😜</div>
   </div>
 
-  <!-- 2. GAME SECTION (LEVEL 1) -->
+  <!-- 2. GAME SECTION -->
   <div id="gameSection" class="card">
-    <h2>Level 1: Back-Rank Mate ♟️️</h2>
-    <p>Find the winning move for White!</p>
+    <h2 id="levelTitle">Level 1: Back-Rank Mate ♟️</h2>
+    <p id="levelInstruction">Tap your piece, then tap the target square to move!</p>
     
     <div id="board"></div>
   </div>
@@ -150,64 +182,241 @@
   <!-- 3. SUCCESS MODAL POPUP -->
   <div id="overlay" class="overlay"></div>
   <div id="successModal" class="modal">
-    <h3>Level Complete! 🎉</h3>
-    <p id="modalMsg" style="font-size: 1.1rem; color: #d81b60; font-weight: 500;"></p>
-    <button onclick="alert('Level 1 complete! Ab Level 2 code karenge!')">Awesome! ➔</button>
+    <h3 id="modalHeader">Level Complete! 🎉</h3>
+    <p id="modalMsg" style="font-size: 1.05rem; color: #d81b60; font-weight: 500;"></p>
+    <button id="nextBtn" onclick="nextLevel()">Proceed to Next Level ➔</button>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
-
   <script>
-    const LEVEL_1_PASSWORD = "bignose"; 
-
-    const level1Data = {
-      fen: '6k1/5ppp/8/8/8/8/4QPPP/6K1 w - - 0 1',
-      winningMove: { from: 'e2', to: 'e8' },
-      message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
+    // Unicode Chess Symbols (Mobile Friendly)
+    const PIECES = {
+      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
     };
 
-    let game, board;
+    // 10 Levels Data Array
+    const levels = [
+      {
+        level: 1,
+        title: "Level 1: Back-Rank Mate ♟️",
+        password: "bignose",
+        hint: "What feature of yours do I tease you with every day? 👃😜",
+        instruction: "Tap White Queen (e2), then tap e8 for Checkmate!",
+        boardState: { 'a8': 'r', 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'f2': 'P', 'g2': 'P', 'h2': 'P', 'e2': 'Q', 'g1': 'K' },
+        winningMove: { from: 'e2', to: 'e8', promo: 'Q' },
+        message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
+      },
+      {
+        level: 2,
+        title: "Level 2: Tactical Attack ♟️",
+        password: "pikachu",
+        hint: "Your favorite yellow cute character ⚡",
+        instruction: "Tap White Bishop (c4), then tap f7 to attack!",
+        boardState: { 'e8': 'k', 'c6': 'n', 'f6': 'n', 'e5': 'p', 'c4': 'B', 'e4': 'P', 'f3': 'N', 'g1': 'K' },
+        winningMove: { from: 'c4', to: 'f7' },
+        message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
+      },
+      {
+        level: 3,
+        title: "Level 3: Knight Fork ♟️",
+        password: "book",
+        hint: "Something you read or carry in your bag 📖",
+        instruction: "Tap White Knight (c3), then tap d5 to fork!",
+        boardState: { 'e8': 'k', 'd8': 'q', 'c6': 'n', 'e5': 'p', 'c3': 'N', 'e4': 'P', 'g1': 'K' },
+        winningMove: { from: 'c3', to: 'd5' },
+        message: "Level 3 unlocked 🔓💖 You look super cute when you get mad at me."
+      },
+      {
+        level: 4,
+        title: "Level 4: Queen Sacrifice Mate ♟️",
+        password: "dentists are not doctors",
+        hint: "That funny truth about dental studies you always argue about 🦷😜",
+        instruction: "Tap White Queen (h5), then tap h7 for Mate!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'h5': 'Q', 'c4': 'B', 'g1': 'K' },
+        winningMove: { from: 'h5', to: 'h7' },
+        message: "Level 4 unlocked 🔓✨ I love the way you talk when you’re excited about something."
+      },
+      {
+        level: 5,
+        title: "Level 5: Smothered Mate ♟️",
+        password: "camel",
+        hint: "Animal with a hump 🐪",
+        instruction: "Tap White Knight (f7), then tap h6 for check!",
+        boardState: { '8': 'r', 'g8': 'k', 'f7': 'N', 'f8': 'r', 'g7': 'p', 'h7': 'p', 'g1': 'K' },
+        winningMove: { from: 'f7', to: 'h6' },
+        message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
+      },
+      {
+        level: 6,
+        title: "Level 6: Rook Skewer ♟️",
+        password: "i love vishal",
+        hint: "3 magic words about us ❤️",
+        instruction: "Tap White Rook (a1), then tap a8 for Skewer!",
+        boardState: { 'a8': 'k', 'h8': 'q', 'a1': 'R', 'g1': 'K' },
+        winningMove: { from: 'a1', to: 'a8' },
+        message: "Level 6 unlocked 🔓 hmmm... lagta h dimag toh h tum me."
+      },
+      {
+        level: 7,
+        title: "Level 7: Discovered Attack ♟️",
+        password: "kela",
+        hint: "Yellow fruit 🍌",
+        instruction: "Tap White Bishop (e3), then tap h6!",
+        boardState: { 'g8': 'k', 'd8': 'q', 'e3': 'B', 'd4': 'R', 'g1': 'K' },
+        winningMove: { from: 'e3', to: 'h6' },
+        message: "Level 7 unlocked 🔓 badhiya khel rhi ho, aese hi life me mere sath khelna h tumhe."
+      },
+      {
+        level: 8,
+        title: "Level 8: Pin & Win ♟️",
+        password: "mera hogya",
+        hint: "What you say when you're done or tired 😴",
+        instruction: "Tap White Pinning Rook (e1), then tap e8!",
+        boardState: { 'e8': 'k', 'e7': 'q', 'e1': 'R', 'g1': 'K' },
+        winningMove: { from: 'e1', to: 'e8' },
+        message: "Level 8 unlocked 🔓 tum soch rhi ho bas chess solve kr rhi ho, pr me toh roz tum par haar rha hu."
+      },
+      {
+        level: 9,
+        title: "Level 9: Endgame Breakthrough ♟️",
+        password: "hello again",
+        hint: "Greeting when meeting someone once more 👋",
+        instruction: "Tap White Pawn (b6), then tap b7 to promote!",
+        boardState: { 'a8': 'k', 'b6': 'P', 'a7': 'p', 'g1': 'K' },
+        winningMove: { from: 'b6', to: 'b7' },
+        message: "Level 9 unlocked 🔓 One last step... ready for the final answer?"
+      },
+      {
+        level: 10,
+        title: "Level 10: Final Checkmate ❤️",
+        password: "tum pyar ho mera",
+        hint: "The sweetest feeling of my life 💖",
+        instruction: "Tap White Queen (g6), then tap g7 for Final Mate!",
+        boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'g6': 'Q', 'f6': 'B', 'g1': 'K' },
+        winningMove: { from: 'g6', to: 'g7' },
+        message: "🎉 LEVEL 10 COMPLETE! ❤️\n\nNo more puzzles… I love you Maneesha. Forever and always."
+      }
+    ];
+
+    let currentLevelIndex = 0;
+    let currentBoardState = {};
+    let selectedSquare = null;
+
+    function loadPasswordScreen() {
+      const lvl = levels[currentLevelIndex];
+      document.getElementById('passTitle').innerText = `🔒 Unlock Level ${lvl.level}`;
+      if (lvl.level > 1) {
+        document.getElementById('passDesc').innerText = `Enter the secret passcode to access Level ${lvl.level}!`;
+      }
+      document.getElementById('hintBox').innerHTML = `<strong>Level ${lvl.level} Hint:</strong> ${lvl.hint}`;
+      document.getElementById('passInput').value = '';
+      document.getElementById('errorMsg').style.display = 'none';
+      document.getElementById('passwordSection').style.display = 'block';
+      document.getElementById('gameSection').style.display = 'none';
+    }
 
     function checkPassword() {
       const input = document.getElementById('passInput').value.trim().toLowerCase();
-      if (input === LEVEL_1_PASSWORD) {
+      const currentLevel = levels[currentLevelIndex];
+
+      if (input === currentLevel.password.toLowerCase()) {
         document.getElementById('passwordSection').style.display = 'none';
         document.getElementById('gameSection').style.display = 'block';
-        initLevel1();
+        initLevel(currentLevel);
       } else {
         document.getElementById('errorMsg').style.display = 'block';
       }
     }
 
-    function initLevel1() {
-      game = new Chess(level1Data.fen);
+    function initLevel(lvlData) {
+      document.getElementById('levelTitle').innerText = lvlData.title;
+      document.getElementById('levelInstruction').innerText = lvlData.instruction;
+      currentBoardState = JSON.parse(JSON.stringify(lvlData.boardState));
+      selectedSquare = null;
+      renderBoard();
+    }
 
-      function onDrop(source, target) {
-        if (source === level1Data.winningMove.from && target === level1Data.winningMove.to) {
-          game.move({ from: source, to: target, promotion: 'q' });
-          board.position(game.fen());
-          
+    function renderBoard() {
+      const boardEl = document.getElementById('board');
+      boardEl.innerHTML = '';
+
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+      for (let r = 0; r < 8; r++) {
+        for (let f = 0; f < 8; f++) {
+          const squareId = files[f] + ranks[r];
+          const isWhiteSquare = (r + f) % 2 === 0;
+
+          const squareEl = document.createElement('div');
+          squareEl.className = `square ${isWhiteSquare ? 'white-square' : 'black-square'}`;
+          squareEl.dataset.square = squareId;
+
+          if (selectedSquare === squareId) {
+            squareEl.classList.add('selected');
+          }
+
+          if (currentBoardState[squareId]) {
+            const pieceCode = currentBoardState[squareId];
+            squareEl.innerText = PIECES[pieceCode];
+          }
+
+          squareEl.addEventListener('click', () => handleSquareClick(squareId));
+          boardEl.appendChild(squareEl);
+        }
+      }
+    }
+
+    function handleSquareClick(squareId) {
+      const lvl = levels[currentLevelIndex];
+
+      if (!selectedSquare) {
+        if (currentBoardState[squareId] && currentBoardState[squareId] === currentBoardState[squareId].toUpperCase()) {
+          selectedSquare = squareId;
+          renderBoard();
+        }
+      } else {
+        if (selectedSquare === lvl.winningMove.from && squareId === lvl.winningMove.to) {
+          // Correct Winning Move Executed
+          currentBoardState[squareId] = lvl.winningMove.promo ? lvl.winningMove.promo : currentBoardState[selectedSquare];
+          delete currentBoardState[selectedSquare];
+          selectedSquare = null;
+          renderBoard();
+
           setTimeout(() => {
-            document.getElementById('modalMsg').innerText = level1Data.message;
+            document.getElementById('modalMsg').innerText = lvl.message;
+            if (lvl.level === 10) {
+              document.getElementById('modalHeader').innerText = "Game Completed! 💖";
+              document.getElementById('nextBtn').innerText = "Replay Game 🔄";
+            } else {
+              document.getElementById('modalHeader').innerText = "Level Complete! 🎉";
+              document.getElementById('nextBtn').innerText = "Proceed to Next Level ➔";
+            }
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('successModal').style.display = 'block';
           }, 300);
         } else {
-          return 'snapback';
+          selectedSquare = null;
+          renderBoard();
         }
       }
-
-      // FIX: Added direct pieceTheme CDN path so images always load properly!
-      board = Chessboard('board', {
-        draggable: true,
-        position: game.fen(),
-        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
-        onDrop: onDrop
-      });
     }
+
+    function nextLevel() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('successModal').style.display = 'none';
+      
+      if (currentLevelIndex < levels.length - 1) {
+        currentLevelIndex++;
+        loadPasswordScreen();
+      } else {
+        currentLevelIndex = 0;
+        loadPasswordScreen();
+      }
+    }
+
+    // Start with Level 1 Password Screen
+    loadPasswordScreen();
   </script>
 </body>
 </html>
