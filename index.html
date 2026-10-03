@@ -93,7 +93,7 @@
     }
 
     #board {
-      width: 350px;
+      width: 320px;
       margin: 20px auto;
     }
 
@@ -141,7 +141,7 @@
 
   <!-- 2. GAME SECTION (LEVEL 1) -->
   <div id="gameSection" class="card">
-    <h2>Level 1: Back-Rank Mate ♟️</h2>
+    <h2>Level 1: Back-Rank Mate ♟️️</h2>
     <p>Find the winning move for White!</p>
     
     <div id="board"></div>
@@ -161,7 +161,6 @@
   <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
   <script>
-    // Level 1 Password set to bignose
     const LEVEL_1_PASSWORD = "bignose"; 
 
     const level1Data = {
@@ -201,9 +200,11 @@
         }
       }
 
+      // FIX: Added direct pieceTheme CDN path so images always load properly!
       board = Chessboard('board', {
         draggable: true,
         position: game.fen(),
+        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
         onDrop: onDrop
       });
     }
