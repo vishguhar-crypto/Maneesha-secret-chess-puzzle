@@ -1,24 +1,246 @@
-#board {
-  display: grid;
-  grid-template-columns: repeat(8, 40px);
-  grid-template-rows: repeat(8, 40px);
-  width: 320px;
-  height: 320px;
-  margin: 20px auto;
-  border: 3px solid #d81b60;
-  border-radius: 8px;
-  overflow: hidden;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maneesha's Secret Chess Quest - Level 1 ❤</title>
+  <style>
+    body {
+      background-color: #fff0f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
 
-.square {
-  width: 40px;
-  height: 40px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  line-height: 1;
-  user-select: none;
-  cursor: pointer;
-}
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+      border: 2px solid #ffb6c1;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1, h2 {
+      color: #d81b60;
+      margin-bottom: 10px;
+      font-size: 1.4rem;
+    }
+
+    p {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    input[type="password"] {
+      width: 80%;
+      padding: 12px;
+      margin: 20px 0 10px 0;
+      border: 2px solid #ffb6c1;
+      border-radius: 25px;
+      outline: none;
+      text-align: center;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #errorMsg {
+      color: #e53935;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Fixed 8x8 Board & Equal Box Sizes */
+    #board {
+      display: grid;
+      grid-template-columns: repeat(8, 40px);
+      grid-template-rows: repeat(8, 40px);
+      width: 320px;
+      height: 320px;
+      margin: 20px auto;
+      border: 3px solid #d81b60;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .square {
+      width: 40px;
+      height: 40px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      line-height: 1;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .white-square { background-color: #ffe6eb; }
+    .black-square { background-color: #ff99bb; }
+    .square.selected { background-color: #ff1493 !important; color: white; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      border: 3px solid #ff69b4;
+      z-index: 100;
+      width: 80%;
+      max-width: 350px;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Password Screen -->
+  <div id="passwordSection" class="card">
+    <h1>🔒 Unlock Level 1</h1>
+    <p>Welcome to your secret chess quest, Maneesha! ✨<br>Enter the secret passcode to unlock!</p>
+
+    <input type="password" id="passInput" placeholder="Enter Secret Passcode..." />
+    <br>
+    <button onclick="checkPassword()">Unlock Puzzle 🔓</button>
+    <div id="errorMsg">Wrong passcode! Try again 😜</div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameSection" class="card" style="display:none;">
+    <h2>Level 1: Back-Rank Mate ♟️</h2>
+    <p>White to play: Find the checkmate move!</p>
+    <div id="board"></div>
+  </div>
+
+  <!-- Victory Overlay -->
+  <div id="overlay" class="overlay"></div>
+  <div id="successModal" class="modal">
+    <h3>Level Complete! 🎉</h3>
+    <p id="modalMsg" style="font-size: 1.05rem; color: #d81b60; font-weight: 500;"></p>
+  </div>
+
+  <script>
+    const PIECES = {
+      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
+      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
+    };
+
+    const level1Data = {
+      password: "bignose",
+      // White King on g1, Pawns on f2,g2,h2. Rook on e1.
+      // Black King on g8, Pawns on f7,g7,h7.
+      boardState: { 
+        'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 
+        'e1': 'R', 'g1': 'K', 'f2': 'P', 'g2': 'P', 'h2': 'P' 
+      },
+      winningMove: { from: 'e1', to: 'e8' },
+      message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
+    };
+
+    let currentBoardState = {};
+    let selectedSquare = null;
+
+    function checkPassword() {
+      const input = document.getElementById('passInput').value.trim().toLowerCase();
+      if (input === level1Data.password) {
+        document.getElementById('passwordSection').style.display = 'none';
+        document.getElementById('gameSection').style.display = 'block';
+        initBoard();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+
+    function initBoard() {
+      currentBoardState = JSON.parse(JSON.stringify(level1Data.boardState));
+      selectedSquare = null;
+      renderBoard();
+    }
+
+    function renderBoard() {
+      const boardEl = document.getElementById('board');
+      boardEl.innerHTML = '';
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+      for (let r = 0; r < 8; r++) {
+        for (let f = 0; f < 8; f++) {
+          const squareId = files[f] + ranks[r];
+          const isWhiteSquare = (r + f) % 2 === 0;
+
+          const squareEl = document.createElement('div');
+          squareEl.className = `square ${isWhiteSquare ? 'white-square' : 'black-square'}`;
+          if (selectedSquare === squareId) squareEl.classList.add('selected');
+
+          if (currentBoardState[squareId]) {
+            squareEl.innerText = PIECES[currentBoardState[squareId]];
+          }
+
+          squareEl.addEventListener('click', () => handleSquareClick(squareId));
+          boardEl.appendChild(squareEl);
+        }
+      }
+    }
+
+    function handleSquareClick(squareId) {
+      if (!selectedSquare) {
+        // Only allow selecting White pieces (Uppercase)
+        if (currentBoardState[squareId] && currentBoardState[squareId] === currentBoardState[squareId].toUpperCase()) {
+          selectedSquare = squareId;
+          renderBoard();
+        }
+      } else {
+        // Check if move matches winning move
+        if (selectedSquare === level1Data.winningMove.from && squareId === level1Data.winningMove.to) {
+          currentBoardState[squareId] = currentBoardState[selectedSquare];
+          delete currentBoardState[selectedSquare];
+          selectedSquare = null;
+          renderBoard();
+
+          setTimeout(() => {
+            document.getElementById('modalMsg').innerText = level1Data.message;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('successModal').style.display = 'block';
+          }, 300);
+        } else {
+          selectedSquare = null;
+          renderBoard();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
