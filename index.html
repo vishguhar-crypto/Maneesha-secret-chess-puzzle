@@ -156,7 +156,6 @@
         title: "Level 1: Back-Rank Mate ♟️",
         password: "bignose",
         instruction: "White to play: Deliver checkmate in 1 move!",
-        // Black King g8 locked behind pawns f7,g7,h7. Rook on e1 moves legally to e8.
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'e1': 'R', 'g1': 'K', 'f2': 'P', 'g2': 'P', 'h2': 'P' },
         winningMove: { from: 'e1', to: 'e8' },
         message: "🎉 Level 1 unlocked! 🔓 Okay, you’re smarter than I thought."
@@ -166,17 +165,15 @@
         title: "Level 2: Smothered Mate ♟️",
         password: "pikachu",
         instruction: "White to play: Smother Black's King!",
-        // Black King h8, trapped by Rook g8 & pawns g7, h7. Knight on f6 jumps legally to f7 for checkmate.
         boardState: { 'h8': 'k', 'g8': 'r', 'g7': 'p', 'h7': 'p', 'f6': 'N', 'g1': 'K' },
         winningMove: { from: 'f6', to: 'f7' },
-        message: "Level 2 unlocked 🔓❤️ I like your eyes, your voice… and that big big noseeee of yours."
+        message: "Level 2 unlocked 🔓❤️️ I like your eyes, your voice… and that big big noseeee of yours."
       },
       {
         level: 3,
         title: "Level 3: Boden's Mate ♟️",
         password: "book",
         instruction: "White to play: Checkmate using the Bishops!",
-        // Black King c8, Rook b8, Pawns a7, b7. Bishop a6 covers b7/c8. Bishop f4 moves legally to c7 for mate.
         boardState: { 'c8': 'k', 'b8': 'r', 'b7': 'p', 'a7': 'p', 'f4': 'B', 'a6': 'B', 'g1': 'K' },
         winningMove: { from: 'f4', to: 'c7' },
         message: "Level 3 unlocked 🔓💖 You look super cute when you get mad at me."
@@ -185,8 +182,7 @@
         level: 4,
         title: "Level 4: Scholar's Attack ♟️",
         password: "dentists are not doctors",
-        instruction: "White to play: Deliver Checkmate on f7!",
-        // Classic Queen h5 captures f7 pawn with Bishop c4 support.
+        instruction: "White to play: Find the checkmate move!",
         boardState: { 'e8': 'k', 'e5': 'p', 'f7': 'p', 'c4': 'B', 'h5': 'Q', 'g1': 'K' },
         winningMove: { from: 'h5', to: 'f7' },
         message: "Level 4 unlocked 🔓✨ I love the way you talk when you’re excited about something."
@@ -195,18 +191,16 @@
         level: 5,
         title: "Level 5: Anastasia's Mate ♟️",
         password: "camel",
-        instruction: "White to play: Checkmate along the open h-file!",
-        // Black King h8, Pawn g7, Knight e7 controls g8/g6. Rook on a1 slides legally to h1.
+        instruction: "White to play: Checkmate along the open file!",
         boardState: { 'h8': 'k', 'g7': 'p', 'e7': 'N', 'a1': 'R', 'g1': 'K' },
         winningMove: { from: 'a1', to: 'h1' },
         message: "Level 5 unlocked 🔓🌸 Halfway through! You’re actually really good at this."
       },
       {
         level: 6,
-        title: "Level 6: Arabian Mate ♟️",
+        title: "Level 6: Arabian Mate ♟️️",
         password: "i love vishal",
-        instruction: "White to play: Coordinate Rook & Knight for checkmate!",
-        // Black King h8, Knight f6 controls h7/g8. Rook on b7 moves legally to h7.
+        instruction: "White to play: Coordinate Rook & Knight!",
         boardState: { 'h8': 'k', 'f6': 'N', 'b7': 'R', 'g1': 'K' },
         winningMove: { from: 'b7', to: 'h7' },
         message: "Level 6 unlocked 🔓 hmmm... lagta h dimag toh h tum me."
@@ -215,8 +209,7 @@
         level: 7,
         title: "Level 7: Greco's Mate ♟️",
         password: "kela",
-        instruction: "White to play: Deliver checkmate on h7!",
-        // Black King g8, Pawns f7, g7. Bishop d3 eyes h7. Queen h4 captures h7 pawn legally.
+        instruction: "White to play: Deliver checkmate!",
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'd3': 'B', 'h4': 'Q', 'g1': 'K' },
         winningMove: { from: 'h4', to: 'h7' },
         message: "Level 7 unlocked 🔓 badhiya khel rhi ho, aese hi life me mere sath khelna h tumhe."
@@ -226,7 +219,6 @@
         title: "Level 8: Dovetail Mate ♟️",
         password: "mera hogya",
         instruction: "White to play: Find the lethal Queen checkmate!",
-        // Black King f7, Pawns e7, g7. Queen d5 moves legally diagonally to e6 for Dovetail mate.
         boardState: { 'f7': 'k', 'e7': 'p', 'g7': 'p', 'd5': 'Q', 'g1': 'K' },
         winningMove: { from: 'd5', to: 'e6' },
         message: "Level 8 unlocked 🔓 tum soch rhi ho bas chess solve kr rhi ho, pr me toh roz tum par haar rha hu."
@@ -235,8 +227,7 @@
         level: 9,
         title: "Level 9: Opera Mate ♟️",
         password: "hello again",
-        instruction: "White to play: Checkmate with the Rook on the d-file!",
-        // Black King d8, Pawn c7, Bishop b8. Bishop f3 controls e8. Rook d1 slides legally to d8.
+        instruction: "White to play: Checkmate with the Rook!",
         boardState: { 'd8': 'k', 'c7': 'p', 'b8': 'b', 'f3': 'B', 'd1': 'R', 'g1': 'K' },
         winningMove: { from: 'd1', to: 'd8' },
         message: "Level 9 unlocked 🔓 One last step... ready for the final answer?"
@@ -246,7 +237,6 @@
         title: "Level 10: Romantic Checkmate ❤️",
         password: "tum pyar ho mera",
         instruction: "White to play: Deliver the final checkmate!",
-        // Black King g8, Pawns f7, g7, h7. Bishop f6 supports Queen g6 moving legally to g7.
         boardState: { 'g8': 'k', 'f7': 'p', 'g7': 'p', 'h7': 'p', 'g6': 'Q', 'f6': 'B', 'g1': 'K' },
         winningMove: { from: 'g6', to: 'g7' },
         message: "🎉 LEVEL 10 COMPLETE! ❤️\n\nNo more puzzles… I love you Maneesha. Forever and always."
